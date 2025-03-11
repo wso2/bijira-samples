@@ -5,7 +5,7 @@ info:
   contact: {}
   version: "1.0"
 servers:
-  - url: http://localhost:8080
+  - url: https://db720294-98fd-40f4-85a1-cc6a3b65bc9a-prod.e1-us-east-azure.choreoapis.dev/godzilla/reading-list-api-service/v1.0
 paths:
   /books:
     get:
