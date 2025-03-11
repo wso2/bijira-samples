@@ -23,14 +23,13 @@ The following steps will guide you through the process of creating and deploying
 ### Create the API Proxy
 
 1. Go to [https://console.bijira.dev/](https://console.bijira.dev/) and sign in. This opens the project home page.
-2. Click **Create** button in the Component Listing section. 
-3. Choose **Create API Proxy for My APIs (Ingress)** option and select **Import API Contract**.
-4. Select **URL** option and provide the following URL to import the API contract from the GitHub repository:
+2. Choose **My APIs (Ingress)** option and select **Import API Contract**.
+3. Select **URL** option and provide the following URL to import the API contract from the GitHub repository:
    ```
    https://raw.githubusercontent.com/wso2/bijira-samples/refs/heads/main/reading-list-api/open-api.yaml
    ```
-5. Click **Next** and edit pre-defined values as needed. You can keep the default values for this sample.
-6. Click **Create** to create the API Proxy. Wait for the setup to complete.
+4. Click **Next** and edit pre-defined values as needed. You can keep the default values for this sample.
+5. Click **Create** to create the API Proxy. Wait for the setup to complete.
 
 ### Configure and Deploy the API Proxy
 
