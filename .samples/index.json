@@ -1,0 +1,53 @@
+{
+  "count": 3,
+  "samples": [
+    {
+      "name": "Reading List API",
+      "displayName": "Reading List API",
+      "description": "A sample API proxy that performs CRUD operations on a list of books.",
+      "componentType": "API-proxy",
+      "repositoryUrl": "https://github.com/Avishka-Shamendra/bijira-samples/",
+      "componentPath": "/reading-list-api",
+      "thumbnailPath": "https://raw.githubusercontent.com/Avishka-Shamendra/bijira-samples/refs/heads/main/.samples/icons/reading-list-app.svg",
+      "documentationPath": "/reading-list-api/readme.md",
+      "buildPack": "none",
+      "tags": [
+        "API Proxy",
+        "HTTP"
+      ]
+    },
+    {
+      "name": "OpenAI Sample API",
+      "displayName": "OpenAI Sample API",
+      "description": "A sample API proxy that interacts with OpenAI API.",
+      "componentType": "API-proxy",
+      "repositoryUrl": "https://github.com/Avishka-Shamendra/bijira-samples/",
+      "componentPath": "/open-ai-api",
+      "thumbnailPath": "https://raw.githubusercontent.com/Avishka-Shamendra/bijira-samples/refs/heads/main/.samples/icons/openai.svg",
+      "documentationPath": "/open-ai-api/readme.md",
+      "buildPack": "none",
+      "tags": [
+        "API Proxy",
+        "HTTP",
+        "Egress",
+        "AI"
+      ]
+    },
+    {
+      "name": "OpenWeatherMap Sample API",
+      "displayName": "OpenWeatherMap Sample API",
+      "description": "A sample API proxy that interacts with OpenWeatherMap API.",
+      "componentType": "API-proxy",
+      "repositoryUrl": "https://github.com/Avishka-Shamendra/bijira-samples/",
+      "componentPath": "/openweathermap-api",
+      "thumbnailPath": "https://raw.githubusercontent.com/Avishka-Shamendra/bijira-samples/main/.samples/icons/openweathermap.svg",
+      "documentationPath": "/openweathermap-api/readme.md",
+      "buildPack": "none",
+      "tags": [
+        "API Proxy",
+        "HTTP",
+        "Egress"
+      ]
+    }
+  ]
+}

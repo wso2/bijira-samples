@@ -1,0 +1,214 @@
+openapi: 3.0.1
+info:
+  title: Reading List API
+  description: This is a sample proxy that manages a list of reading items.
+  contact: {}
+  version: "1.0"
+servers:
+  - url: http://localhost:8080
+paths:
+  /books:
+    get:
+      tags:
+        - books
+      summary: List all the reading list books
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/models.Book'
+    post:
+      tags:
+        - books
+      summary: Add a new book to the reading list
+      requestBody:
+        description: New book details (without ID)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/models.BookCreate'
+        required: true
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/models.Book'
+                  - type: object
+                    properties:
+                      note:
+                        type: string
+                        example: "Please note that changes are not persisted."
+        "400":
+          description: invalid book details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/utils.ErrorResponse'
+        "409":
+          description: book already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/utils.ErrorResponse'
+  /books/{id}:
+    get:
+      tags:
+        - books
+      summary: Get reading list book by id
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/models.Book'
+        "404":
+          description: book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/utils.ErrorResponse'
+    put:
+      tags:
+        - books
+      summary: Update a reading list book by id
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated book details (only status)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/models.BookUpdate'
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/models.Book'
+                  - type: object
+                    properties:
+                      note:
+                        type: string
+                        example: "Please note that changes are not persisted."
+        "400":
+          description: invalid book details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/utils.ErrorResponse'
+        "404":
+          description: book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/utils.ErrorResponse'
+    delete:
+      tags:
+        - books
+      summary: Delete a reading list book by id
+      parameters:
+        - name: id
+          in: path
+          description: Book ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: fe2594d0-ccea-42a2-97ac-0487458b5642
+                  note:
+                    type: string
+                    example: "Please note that changes are not persisted."
+        "404":
+          description: book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/utils.ErrorResponse'
+components:
+  schemas:
+    models.Book:
+      type: object
+      properties:
+        author:
+          type: string
+          example: J. R. R. Tolkien
+        id:
+          type: string
+          example: fe2594d0-ccea-42a2-97ac-0487458b5642
+        status:
+          type: string
+          enum:
+            - read
+            - to_read
+            - reading
+          example: to_read
+        title:
+          type: string
+          example: The Lord of the Rings
+    models.BookCreate:
+      type: object
+      properties:
+        author:
+          type: string
+          example: J. R. R. Tolkien
+        status:
+          type: string
+          enum:
+            - read
+            - to_read
+            - reading
+          example: to_read
+        title:
+          type: string
+          example: The Lord of the Rings
+    models.BookUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - read
+            - to_read
+            - reading
+          example: reading
+    utils.ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: error message
