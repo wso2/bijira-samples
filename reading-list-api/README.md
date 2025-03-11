@@ -22,7 +22,7 @@ The following steps will guide you through the process of creating and deploying
 
 ### Create the API Proxy
 
-1. Go to [https://preview-dv.bijira.dev/](https://preview-dv.bijira.dev/) and sign in. This opens the project home page.
+1. Go to [https://console.bijira.dev/](https://console.bijira.dev/) and sign in. This opens the project home page.
 2. Click **Create** button in the Component Listing section. 
 3. Choose **Create API Proxy for My APIs (Ingress)** option and select **Import API Contract**.
 4. Select **URL** option and provide the following URL to import the API contract from the GitHub repository:
