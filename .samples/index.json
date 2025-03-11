@@ -38,9 +38,9 @@
       "displayName": "Cloudmersive Currency API",
       "description": "A sample API proxy that interacts with Cloudmersive Currency API.",
       "componentType": "API-proxy",
-      "repositoryUrl": "https://github.com/Avishka-Shamendra/bijira-samples/",
+      "repositoryUrl": "https://github.com/wso2/bijira-samples/",
       "componentPath": "/cloudmersive-currency-api",
-      "thumbnailPath": "https://raw.githubusercontent.com/Avishka-Shamendra/bijira-samples/refs/heads/main/.samples/icons/cloudmersive.svg",
+      "thumbnailPath": "https://raw.githubusercontent.com/wso2/bijira-samples/refs/heads/main/.samples/icons/cloudmersive.svg",
       "documentationPath": "/cloudmersive-currency-api/readme.md",
       "buildPack": "none",
       "tags": [
