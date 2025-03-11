@@ -19,7 +19,7 @@ The following steps will guide you through the process of creating and deploying
 
 ### Create the API Proxy
 
-1. Visit [https://preview-dv.bijira.dev/](https://preview-dv.bijira.dev/) and sign in to your account.
+1. Visit [https://console.bijira.dev/](https://console.bijira.dev/) and sign in to your account.
 2. Click the **Create** button in the **Component Listing** section.
 3. Under **Create API Proxy for Third-Party APIs (Egress)**, select the **Get from Marketplace** option.
 4. Choose **OpenWeatherMap** from the list of available APIs.
