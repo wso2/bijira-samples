@@ -34,14 +34,14 @@
       ]
     },
     {
-      "name": "OpenWeatherMap Sample API",
-      "displayName": "OpenWeatherMap Sample API",
-      "description": "A sample API proxy that interacts with OpenWeatherMap API.",
+      "name": "Cloudmersive Currency API",
+      "displayName": "Cloudmersive Currency API",
+      "description": "A sample API proxy that interacts with Cloudmersive Currency API.",
       "componentType": "API-proxy",
-      "repositoryUrl": "https://github.com/wso2/bijira-samples/",
-      "componentPath": "/openweathermap-api",
-      "thumbnailPath": "https://raw.githubusercontent.com/wso2/bijira-samples/main/.samples/icons/openweathermap.svg",
-      "documentationPath": "/openweathermap-api/readme.md",
+      "repositoryUrl": "https://github.com/Avishka-Shamendra/bijira-samples/",
+      "componentPath": "/cloudmersive-currency-api",
+      "thumbnailPath": "https://raw.githubusercontent.com/Avishka-Shamendra/bijira-samples/refs/heads/main/.samples/icons/cloudmersive.svg",
+      "documentationPath": "/cloudmersive-currency-api/readme.md",
       "buildPack": "none",
       "tags": [
         "API Proxy",
