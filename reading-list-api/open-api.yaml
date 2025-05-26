@@ -3,18 +3,21 @@ info:
   title: Reading List API
   description: This is a sample proxy that manages a list of reading items.
   contact: {}
-  version: "1.0"
+  version: '1.0'
 servers:
   - url: https://apis.bijira.dev/samples/reading-list-api-service/v1.0
 paths:
   /books:
     get:
+      operationId: listBooks
       tags:
         - books
       summary: List all the reading list books
+      description: Retrieve all books from the reading list, including title, author,
+        and status.
       responses:
-        "200":
-          description: successful operation
+        '200':
+          description: A list of books currently in the reading list.
           content:
             application/json:
               schema:
@@ -25,19 +28,22 @@ paths:
                     items:
                       $ref: '#/components/schemas/models.Book'
     post:
+      operationId: createBook
       tags:
         - books
       summary: Add a new book to the reading list
+      description: Create a new book entry with author, title, and reading status.
+        ID is auto-generated.
       requestBody:
         description: New book details (without ID)
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/models.BookCreate'
-        required: true
       responses:
-        "201":
-          description: successful operation
+        '201':
+          description: Book successfully created
           content:
             application/json:
               schema:
@@ -47,114 +53,15 @@ paths:
                     properties:
                       note:
                         type: string
-                        example: "Please note that changes are not persisted."
-        "400":
-          description: invalid book details
+                        example: Please note that changes are not persisted.
+        '400':
+          description: Invalid book details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
-        "409":
-          description: book already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
-  /books/{id}:
-    get:
-      tags:
-        - books
-      summary: Get reading list book by id
-      parameters:
-        - name: id
-          in: path
-          description: Book ID
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/models.Book'
-        "404":
-          description: book not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
-    put:
-      tags:
-        - books
-      summary: Update a reading list book by id
-      parameters:
-        - name: id
-          in: path
-          description: Book ID
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: Updated book details (only status)
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/models.BookUpdate'
-        required: true
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/models.Book'
-                  - type: object
-                    properties:
-                      note:
-                        type: string
-                        example: "Please note that changes are not persisted."
-        "400":
-          description: invalid book details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
-        "404":
-          description: book not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
-    delete:
-      tags:
-        - books
-      summary: Delete a reading list book by id
-      parameters:
-        - name: id
-          in: path
-          description: Book ID
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: fe2594d0-ccea-42a2-97ac-0487458b5642
-                  note:
-                    type: string
-                    example: "Please note that changes are not persisted."
-        "404":
-          description: book not found
+        '409':
+          description: Book already exists
           content:
             application/json:
               schema:
@@ -196,16 +103,6 @@ components:
         title:
           type: string
           example: The Lord of the Rings
-    models.BookUpdate:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-            - read
-            - to_read
-            - reading
-          example: reading
     utils.ErrorResponse:
       type: object
       properties:
