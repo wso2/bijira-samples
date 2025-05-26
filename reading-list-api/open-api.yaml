@@ -3,7 +3,7 @@ info:
   title: Reading List API
   description: This is a sample proxy that manages a list of reading items.
   contact: {}
-  version: "1.0"
+  version: '1.0'
 servers:
   - url: https://apis.bijira.dev/samples/reading-list-api-service/v1.0
 paths:
@@ -13,7 +13,7 @@ paths:
         - books
       summary: List all the reading list books
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
@@ -24,6 +24,10 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/models.Book'
+      operationId: listBooks
+      description: Returns a list of all books currently in the reading list. Each
+        book includes the title, author, status (to_read, reading, read), and its
+        unique identifier.
     post:
       tags:
         - books
@@ -36,7 +40,7 @@ paths:
               $ref: '#/components/schemas/models.BookCreate'
         required: true
       responses:
-        "201":
+        '201':
           description: successful operation
           content:
             application/json:
@@ -47,19 +51,23 @@ paths:
                     properties:
                       note:
                         type: string
-                        example: "Please note that changes are not persisted."
-        "400":
+                        example: Please note that changes are not persisted.
+        '400':
           description: invalid book details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
-        "409":
+        '409':
           description: book already exists
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: createBook
+      description: Adds a new book to the reading list. Requires the title, author,
+        and initial reading status. The system automatically assigns an ID to the
+        book.
   /books/{id}:
     get:
       tags:
@@ -73,18 +81,21 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/models.Book'
-        "404":
+        '404':
           description: book not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: getBookById
+      description: Fetches the details of a specific book in the reading list by its
+        unique ID. If the book is not found, a 404 response is returned.
     put:
       tags:
         - books
@@ -104,7 +115,7 @@ paths:
               $ref: '#/components/schemas/models.BookUpdate'
         required: true
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
@@ -115,19 +126,23 @@ paths:
                     properties:
                       note:
                         type: string
-                        example: "Please note that changes are not persisted."
-        "400":
+                        example: Please note that changes are not persisted.
+        '400':
           description: invalid book details
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
-        "404":
+        '404':
           description: book not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: updateBookById
+      description: Updates the reading status of an existing book identified by its
+        ID. Only the status field (to_read, reading, read) can be updated. Returns
+        the updated book object.
     delete:
       tags:
         - books
@@ -140,7 +155,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
@@ -152,13 +167,17 @@ paths:
                     example: fe2594d0-ccea-42a2-97ac-0487458b5642
                   note:
                     type: string
-                    example: "Please note that changes are not persisted."
-        "404":
+                    example: Please note that changes are not persisted.
+        '404':
           description: book not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: deleteBookById
+      description: Deletes the book with the given ID from the reading list. Returns
+        the ID of the deleted book if the operation was successful. If the book is
+        not found, a 404 response is returned.
 components:
   schemas:
     models.Book:
