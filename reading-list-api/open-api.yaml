@@ -11,8 +11,7 @@ paths:
     get:
       tags:
         - books
-      operationId: listBooks
-      description: Retrieve the full reading list with details such as title, author, and status.
+      summary: List all the reading list books
       responses:
         '200':
           description: successful operation
@@ -25,11 +24,14 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/models.Book'
+      operationId: listBooks
+      description: Returns a list of all books currently in the reading list. Each
+        book includes the title, author, status (to_read, reading, read), and its
+        unique identifier.
     post:
       tags:
         - books
-      operationId: createBook
-      description: Add a new book entry to the reading list.
+      summary: Add a new book to the reading list
       requestBody:
         description: New book details (without ID)
         content:
@@ -62,12 +64,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: createBook
+      description: Adds a new book to the reading list. Requires the title, author,
+        and initial reading status. The system automatically assigns an ID to the
+        book.
   /books/{id}:
     get:
       tags:
         - books
-      operationId: getBookById
-      description: Retrieve a single book's details by its unique ID.
+      summary: Get reading list book by id
       parameters:
         - name: id
           in: path
@@ -88,11 +93,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: getBookById
+      description: Fetches the details of a specific book in the reading list by its
+        unique ID. If the book is not found, a 404 response is returned.
     put:
       tags:
         - books
-      operationId: updateBookById
-      description: Update the status (e.g., reading, read) of a specific book by ID.
+      summary: Update a reading list book by id
       parameters:
         - name: id
           in: path
@@ -132,11 +139,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: updateBookById
+      description: Updates the reading status of an existing book identified by its
+        ID. Only the status field (to_read, reading, read) can be updated. Returns
+        the updated book object.
     delete:
       tags:
         - books
-      operationId: deleteBookById
-      description: Remove a book from the reading list using its ID.
+      summary: Delete a reading list book by id
       parameters:
         - name: id
           in: path
@@ -164,6 +174,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/utils.ErrorResponse'
+      operationId: deleteBookById
+      description: Deletes the book with the given ID from the reading list. Returns
+        the ID of the deleted book if the operation was successful. If the book is
+        not found, a 404 response is returned.
 components:
   schemas:
     models.Book:
