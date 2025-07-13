@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat with AI Agent</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        background: linear-gradient(to right, #eef2f3, #8e9eab);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+      }
+
+      h2 {
+        color: #222;
+        margin-top: 20px;
+      }
+
+      #main-container {
+        display: flex;
+        width: 100%;
+        max-width: 1280px;
+        margin: 20px;
+        gap: 20px;
+      }
+
+      #chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        font-size: 14px;
+      }
+
+      #chat-box {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f7f9fb;
+      }
+
+      .message-container {
+        display: flex;
+        margin: 10px 0;
+      }
+
+      .message-container.user {
+        justify-content: flex-end;
+      }
+
+      .message-container.bot {
+        justify-content: flex-start;
+      }
+
+      .message {
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 16px;
+        line-height: 1.4;
+        position: relative;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      .user .message {
+        background: #d0e6ff;
+        color: #003366;
+        border-bottom-right-radius: 0;
+      }
+
+      .bot .message {
+        background: #e0e0e0;
+        color: #222;
+        border-bottom-left-radius: 0;
+      }
+
+      .label {
+        font-size: 0.75rem;
+        color: #666;
+        margin: 2px 10px;
+      }
+
+      .user .label {
+        text-align: right;
+      }
+
+      .bot .label {
+        text-align: left;
+      }
+
+      #input-container {
+        display: flex;
+        padding: 12px;
+        border-top: 1px solid #ddd;
+        background: #fff;
+      }
+
+      #message {
+        flex: 1;
+        padding: 10px 16px;
+        font-size: 1rem;
+        border-radius: 24px;
+        border: 1px solid #ccc;
+        outline: none;
+      }
+
+      button {
+        margin-left: 10px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 24px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #open-config-btn {
+        position: fixed;
+        top: 20px;
+        right: 30px;
+        z-index: 1001;
+        background-color: #007bff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 16px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal #config-section {
+        background: #fff;
+        width: 90%;
+        max-width: 800px;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      #config-section h3 {
+        margin-top: 0;
+      }
+
+      /* #config-section label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    } */
+
+      #config-section input,
+      #config-section select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        padding-right: 32px; /* Add right padding for dropdown icon */
+        background-position: right 12px center; /* Move dropdown icon left */
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+      }
+
+      #config-section button {
+        /* width: 100%; */
+        background-color: #007bff;
+        border: none;
+        padding: 10px;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      #config-section button:hover {
+        background-color: #0056b3;
+      }
+
+      #config-section .apply-config-btn {
+        background-color: #007bff;
+      }
+
+      #config-section .apply-config-btn:hover {
+        background-color: #0056b3;
+      }
+
+      #config-section .remove-server-btn {
+        background-color: #dc3545;
+        /* margin: 8px auto 0 auto !important;
+        width: calc(100% - 20px) !important; */
+        display: block;
+      }
+
+      #config-section .remove-server-btn:hover {
+        background-color: #c82333;
+      }
+
+      .server-entry input {
+        width: 100%;
+        margin-bottom: 6px;
+      }
+
+      .server-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+      }
+
+      .server-header h4 {
+        margin: 0;
+        color: #333;
+        font-size: 0.95rem;
+      }
+
+      .server-toggle {
+        font-size: 14px;
+        transition: transform 0.2s ease;
+        color: #666;
+        transform: rotate(180deg);
+      }
+
+      .server-toggle.collapsed {
+        transform: rotate(0deg);
+      }
+
+      .server-content {
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      .server-content.collapsed {
+        max-height: 0;
+        opacity: 0;
+        margin-bottom: 0;
+      }
+
+      .config-form-label {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        display: block;
+        font-size: small;
+      }
+
+      #snackbar {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #495057;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: normal;
+        z-index: 10000;
+        display: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        min-width: 300px;
+        text-align: center;
+      }
+
+      #snackbar.show {
+        display: block;
+      }
+
+      @media screen and (max-width: 900px) {
+        #main-container {
+          flex-direction: column;
+        }
+
+        #chat-container {
+          height: 70vh;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        #chat-container {
+          height: 70vh;
+          margin: 10px 0;
+        }
+
+        .message {
+          max-width: 85%;
+        }
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 16px;
+        right: 24px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #666;
+        z-index: 1002;
+      }
+
+      .close-btn:hover {
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>🤖 Chat with AI Agent</h2>
+
+    <div id="main-container">
+      <div id="chat-container">
+        <div id="chat-box"></div>
+        <div id="input-container">
+          <input
+            type="text"
+            id="message"
+            placeholder="Type a message..."
+            autocomplete="off"
+          />
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+   <div id="snackbar"></div>
+    <button id="open-config-btn" onclick="openConfigModal()">
+      ⚙️ Settings
+    </button>
+
+    <div id="config-modal" class="modal">
+      <div id="config-section">
+        <span class="close-btn" onclick="closeConfigModal()">✖</span>
+
+        <h3>⚙️ Configuration</h3>
+        <div
+          style="border: 1px solid #bee5eb; border-radius: 4px; margin: 8px 0"
+        >
+          <div
+            style="
+              border-radius: 4px 4px 0 0;
+              padding: 8px;
+              background: #e8f4fd;
+            "
+          >
+            <h4 style="margin: 0px; color: #0c5460">LLM Configuration</h4>
+          </div>
+          <div
+            style="
+              padding: 16px;
+            "
+          >
+            <label class="config-form-label">Model Provider:</label>
+            <select id="provider" onchange="toggleProviderFields()">
+              <option value="openai">OpenAI</option>
+              <option value="azure_openai">Azure OpenAI</option>
+              <option value="mistralai">MistralAI</option>
+            </select>
+
+            <div id="model-name-field">
+              <label class="config-form-label">Model Name:</label>
+              <input type="text" id="model-name" placeholder="e.g., gpt-4o" value="gpt-3.5-turbo" />
+            </div>
+            
+            <!-- Azure OpenAI specific fields -->
+            <div id="azure-fields" style="display: none;">
+              <label class="config-form-label">Azure Deployment:</label>
+              <input type="text" id="azure-deployment" placeholder="e.g., gpt-35-turbo" value="" />
+              
+              <label class="config-form-label">API Version:</label>
+              <input type="text" id="api-version" placeholder="e.g., 2023-05-15" value="" />
+              
+              <label class="config-form-label">Azure Endpoint:</label>
+              <input type="text" id="azure-endpoint" placeholder="https://your-resource.openai.azure.com/" />
+            </div>
+
+            <label class="config-form-label">LLM API Key:</label>
+            <input
+              type="password"
+              id="api-key"
+              placeholder="Enter your API key"
+            />
+          </div>
+        </div>
+        <!-- <div style="background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 4px; padding: 8px; margin: 8px 0; font-size: 0.8rem; color: #0c5460;">
+        ℹ️ <strong>Session Storage:</strong> All configuration data is stored temporarily and will be cleared when you close this browser tab.
+      </div> -->
+
+      <div>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            margin-top: 12px;
+          "
+        >
+          <label style="margin: 0">MCP Server Configuration:</label>
+          <button
+            type="button"
+            onclick="addServerInput()"
+            style="
+              margin: 0;
+              width: auto;
+              padding: 6px 12px;
+              font-size: 0.85rem;
+            "
+          >
+            Add Server
+          </button>
+        </div>
+        <div id="mcp-server-list"></div>
+        <button
+          onclick="applyConfig()"
+          class="apply-config-btn"
+          style="margin: 10px auto; width: calc(100% - 40px); display: block"
+        >
+          Apply Configuration
+        </button>
+      </div>
+    </div>
+
+
+    <script>
+      const chatBox = document.getElementById("chat-box");
+      const input = document.getElementById("message");
+
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+    function toggleProviderFields() {
+      const provider = document.getElementById("provider").value;
+      const azureFields = document.getElementById("azure-fields");
+      const modelNameField = document.getElementById("model-name-field");
+      
+      if (provider === "azure_openai") {
+        azureFields.style.display = "block";
+        modelNameField.style.display = "none";
+      } else {
+        azureFields.style.display = "none";
+        modelNameField.style.display = "block";
+      }
+    }
+
+      function addServerInput(
+        serverName = "",
+        url = "",
+        clientId = "",
+        clientSecret = "",
+        tokenEndpoint = ""
+      ) {
+        const list = document.getElementById("mcp-server-list");
+        const wrapper = document.createElement("div");
+        wrapper.className = "server-entry";
+        wrapper.style.border = "1px solid #ccc";
+        wrapper.style.borderRadius = "8px";
+        wrapper.style.padding = "10px";
+        wrapper.style.marginBottom = "12px";
+        wrapper.style.background = "#f9f9f9";
+
+        const displayName = serverName || "New Server";
+
+        wrapper.innerHTML = `
+        <div class="server-header" onclick="toggleServerContent(this)">
+          <h4>${displayName}</h4>
+          <span class="server-toggle">▼</span>
+        </div>
+        <div class="server-content">
+          <label class="config-form-label" >Server Name:</label>
+          <input type="text" class="server-name" value="${serverName}" placeholder="server1" onchange="updateServerTitle(this)" />
+          <label class="config-form-label">URL:</label>
+          <input type="text" class="server-url" value="${url}" placeholder="https://sample.mcp.test" />
+          <label class="config-form-label">Client ID:</label>
+          <input type="text" class="client-id" value="${clientId}" placeholder="OAuth2 Client ID" />
+          <label class="config-form-label">Client Secret:</label>
+          <input type="password" class="client-secret" value="${clientSecret}" placeholder="OAuth2 Client Secret" />
+          <label class="config-form-label">Token Endpoint:</label>
+          <input type="text" class="token-endpoint" value="${tokenEndpoint}" placeholder="https://auth.example.com/oauth2/token" />
+          <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" onclick="this.closest('.server-entry').remove()" class="remove-server-btn"> Remove</button>
+          </div>
+        </div>
+      `;
+        list.insertBefore(wrapper, list.firstChild);
+      }
+
+      function toggleServerContent(header) {
+        const content = header.nextElementSibling;
+        const toggle = header.querySelector(".server-toggle");
+
+        if (content.classList.contains("collapsed")) {
+          content.classList.remove("collapsed");
+          toggle.classList.remove("collapsed");
+        } else {
+          content.classList.add("collapsed");
+          toggle.classList.add("collapsed");
+        }
+      }
+
+      function updateServerTitle(input) {
+        const serverEntry = input.closest(".server-entry");
+        const header = serverEntry.querySelector(".server-header h4");
+        const newName = input.value.trim() || "New Server";
+        header.textContent = newName;
+      }
+
+    function applyConfig() {
+      const provider = document.getElementById("provider").value;
+      const modelName = document.getElementById("model-name").value;
+      const apiKey = document.getElementById("api-key").value;
+      const azureDeployment = document.getElementById("azure-deployment").value;
+      const apiVersion = document.getElementById("api-version").value;
+      const azureEndpoint = document.getElementById("azure-endpoint").value;
+      
+      const servers = document.querySelectorAll("#mcp-server-list .server-entry");
+      const mcpServers = {};
+      try {
+        servers.forEach(entry => {
+          const name = entry.querySelector(".server-name").value.trim();
+          const url = entry.querySelector(".server-url").value.trim();
+          const clientId = entry.querySelector(".client-id").value.trim();
+          const clientSecret = entry.querySelector(".client-secret").value.trim();
+          const tokenEndpoint = entry.querySelector(".token-endpoint").value.trim();
+          
+          if (!name || !url) throw new Error("Server name and URL are required.");
+          
+          mcpServers[name] = { 
+            url,
+            oauth2: {
+              client_id: clientId,
+              client_secret: clientSecret,
+              token_endpoint: tokenEndpoint
+            }
+          };
+        });
+        
+        const configData = {
+          provider: provider,
+          model_name: modelName,
+          api_key: apiKey,
+          azure_deployment: azureDeployment,
+          api_version: apiVersion,
+          azure_endpoint: azureEndpoint,
+          mcp: { mcpServers }
+        };
+        
+        // Send configuration to server
+        fetch("/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(configData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showSnackbar("✅ Configuration saved to server successfully!");
+            closeConfigModal();
+          } else {
+            showSnackbar("❌ " + (data.error || "Failed to save configuration"));
+          }
+        })
+        .catch(error => {
+          showSnackbar("❌ Could not save configuration to server");
+        });
+      } catch (e) {
+         showSnackbar("❌ Could not save configuration to server");
+      }
+    }
+
+    function loadConfig() {
+      // Fetch configuration from server
+      fetch("/config")
+        .then(response => response.json())
+        .then(config => {
+          if (config.provider) document.getElementById("provider").value = config.provider;
+          if (config.model_name) document.getElementById("model-name").value = config.model_name;
+          if (config.api_key) document.getElementById("api-key").value = config.api_key;
+          if (config.azure_deployment) document.getElementById("azure-deployment").value = config.azure_deployment;
+          if (config.api_version) document.getElementById("api-version").value = config.api_version;
+          if (config.azure_endpoint) document.getElementById("azure-endpoint").value = config.azure_endpoint;
+          
+          // Toggle Azure fields visibility based on loaded provider
+          toggleProviderFields();
+          
+          // Load MCP servers
+          if (config.mcp && config.mcp.mcpServers) {
+            const servers = config.mcp.mcpServers;
+            Object.keys(servers).forEach(name => {
+              const { url, oauth2 } = servers[name];
+              const clientId = oauth2 ? oauth2.client_id : '';
+              const clientSecret = oauth2 ? oauth2.client_secret : '';
+              const tokenEndpoint = oauth2 ? oauth2.token_endpoint : '';
+              addServerInput(name, url, clientId, clientSecret, tokenEndpoint);
+            });
+          }
+        })
+        .catch(error => {
+          // Set default values if no config exists on server
+          toggleProviderFields();
+        });
+    }
+
+      function sendMessage() {
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        appendMessage(msg, "user");
+        input.value = "";
+        scrollToBottom();
+
+      // Send only the message - configuration is stored on server
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      })
+      .then(response => {
+        if (!response.ok) {
+          if (response.status === 500) {
+            throw new Error("Server configuration error");
+          } else {
+            throw new Error(`Server error (${response.status})`);
+          }
+        }
+        return response.json();
+      })
+      .then(data => {
+        const reply = data.response || data.error || "No response";
+        appendMessage(reply, "bot");
+        scrollToBottom();
+      })
+      .catch((error) => {
+        const errorMessage = error.message.includes("Server configuration error") 
+          ? "⚠️ Server Error. Please check your configurations and the MCP server status"
+          : "⚠️ Could not connect to server - please check your connection";
+        appendMessage(errorMessage, "bot");
+        scrollToBottom();
+      });
+    }
+
+      function appendMessage(text, sender) {
+        const container = document.createElement("div");
+        container.classList.add("message-container", sender);
+
+        const label = document.createElement("div");
+        label.classList.add("label");
+        label.textContent = sender === "user" ? "You" : "AI Agent";
+
+        const bubble = document.createElement("div");
+        bubble.classList.add("message");
+        bubble.textContent = text;
+
+        container.appendChild(label);
+        container.appendChild(bubble);
+        chatBox.appendChild(container);
+      }
+
+      function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function showSnackbar(message) {
+        const snackbar = document.getElementById("snackbar");
+        snackbar.textContent = message;
+        snackbar.classList.add("show");
+        setTimeout(() => {
+          snackbar.classList.remove("show");
+        }, 3000);
+      }
+
+      function openConfigModal() {
+        document.getElementById("config-modal").style.display = "flex";
+      }
+
+      function closeConfigModal() {
+        document.getElementById("config-modal").style.display = "none";
+      }
+
+      window.addEventListener("click", function (event) {
+        const modal = document.getElementById("config-modal");
+        if (event.target === modal) closeConfigModal();
+      });
+
+      window.addEventListener("load", loadConfig);
+    </script>
+  </body>
+</html>
