@@ -1,0 +1,41 @@
+openapi: 3.0.3
+info:
+  title: MCP Everything Server
+  version: 1.0.0
+
+paths:
+  /mcp:
+    get:
+      summary: Get and existing session
+      responses:
+        '404':
+          description: Session not found
+
+    post:
+      summary: Call MCP tools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+
+      responses:
+        '200':
+          description: Successful too call
+          content:
+            application/json:
+              schema:
+                type: object
+
+    delete:
+      summary: Delete existing sessions
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '404':
+          description: Session not found
