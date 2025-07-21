@@ -124,29 +124,29 @@ export const createServer = () => {
     return messageLevel < currentLevel;
   };
 
-  // Set up update interval for random log messages
-  logsUpdateInterval = setInterval(() => {
-    let message = {
-      method: "notifications/message",
-      params: messages[Math.floor(Math.random() * messages.length)],
-    };
-    if (!isMessageIgnored(message.params.level as LoggingLevel))
-      server.notification(message);
-  }, 20000);
+  // // Set up update interval for random log messages
+  // logsUpdateInterval = setInterval(() => {
+  //   let message = {
+  //     method: "notifications/message",
+  //     params: messages[Math.floor(Math.random() * messages.length)],
+  //   };
+  //   if (!isMessageIgnored(message.params.level as LoggingLevel))
+  //     server.notification(message);
+  // }, 20000);
 
 
-  // Set up update interval for stderr messages
-  stdErrUpdateInterval = setInterval(() => {
-    const shortTimestamp = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-    server.notification({
-      method: "notifications/stderr",
-      params: { content: `${shortTimestamp}: A stderr message` },
-    });
-  }, 30000);
+  // // Set up update interval for stderr messages
+  // stdErrUpdateInterval = setInterval(() => {
+  //   const shortTimestamp = new Date().toLocaleTimeString([], {
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //     second: "2-digit"
+  //   });
+  //   server.notification({
+  //     method: "notifications/stderr",
+  //     params: { content: `${shortTimestamp}: A stderr message` },
+  //   });
+  // }, 30000);
 
   // Helper method to request sampling from client
   const requestSampling = async (
