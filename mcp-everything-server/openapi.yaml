@@ -5,12 +5,6 @@ info:
 
 paths:
   /mcp:
-    get:
-      summary: Get and existing session
-      responses:
-        '404':
-          description: Session not found
-
     post:
       summary: Call MCP tools
       requestBody:
@@ -27,15 +21,3 @@ paths:
             application/json:
               schema:
                 type: object
-
-    delete:
-      summary: Delete existing sessions
-      parameters:
-        - name: id
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '404':
-          description: Session not found
