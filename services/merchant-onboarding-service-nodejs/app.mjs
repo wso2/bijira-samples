@@ -176,3 +176,5 @@ app.get("/healthz", (_req, res) => {
 app.use("*", (_req, res) => {
   res.status(404).json({ error: "The requested resource does not exist on this server" });
 });
+
+export default app;

@@ -1,0 +1,33 @@
+{
+  "name": "bijira-card-promotions-server",
+  "version": "0.1.0",
+  "description": "MCP server that exercises all the features of the MCP protocol",
+  "license": "MIT",
+  "author": "WSO2 LLC.",
+  "type": "module",
+  "bin": {
+    "mcp-server-card-promotions": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && shx cp instructions.md card-promotions.json dist/ && shx chmod +x dist/*.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "start:streamableHttp": "node dist/streamableHttp.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "express": "^4.21.1",
+    "resend": "^4.7.0",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "shx": "^0.3.4",
+    "typescript": "^5.6.2"
+  }
+}
