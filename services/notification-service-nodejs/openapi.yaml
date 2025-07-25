@@ -17,6 +17,14 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/NotificationRequest'
+            example:
+              type: email
+              to: user@example.com
+              cardTypes: ["Visa", "Mastercard"]
+              category: Travel
+              promoCode: TRAVEL2025
+              subject: "Exclusive Travel Offer"
+              message: "Get 20% off on your next booking with TRAVEL2025."
       responses:
         '201':
           description: Notification accepted
@@ -24,6 +32,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotificationResponse'
+              example:
+                id: "notif_12345"
+                type: email
+                recipient: user@example.com
+                status: pending
+                createdAt: "2025-07-25T06:42:00Z"
+                error: null
         '400':
           description: Invalid request
 
@@ -53,6 +68,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NotificationResponse'
+              example:
+                - id: "notif_12345"
+                  type: email
+                  recipient: user@example.com
+                  status: sent
+                  createdAt: "2025-07-24T11:00:00Z"
+                  error: null
+                - id: "notif_12346"
+                  type: sms
+                  recipient: "+1234567890"
+                  status: failed
+                  createdAt: "2025-07-24T11:01:00Z"
+                  error: "Invalid phone number"
 
   /notifications/{id}:
     get:
@@ -71,6 +99,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotificationResponse'
+              example:
+                id: "notif_12345"
+                type: email
+                recipient: user@example.com
+                status: sent
+                createdAt: "2025-07-24T11:00:00Z"
+                error: null
         '404':
           description: Notification not found
 
@@ -80,24 +115,32 @@ components:
       type: object
       required:
         - type
-        - recipient
+        - to
         - message
       properties:
         type:
           type: string
           enum: [email, sms, push]
-        recipient:
+        to:
           type: string
-          description: Email, phone number, or device token
+          description: Email address, phone number, or device token
+        cardTypes:
+          type: array
+          items:
+            type: string
+          description: List of applicable card types
+        category:
+          type: string
+          description: Notification category
+        promoCode:
+          type: string
+          description: Promotional code
         subject:
           type: string
-          description: Subject (for email/push)
+          description: Subject line (for email/push notifications)
         message:
           type: string
-          description: Notification message body
-        metadata:
-          type: object
-          description: Optional metadata for the notification
+          description: Main body of the notification
 
     NotificationResponse:
       type: object
