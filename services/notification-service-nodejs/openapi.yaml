@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: Notification API
+  version: 1.0.0
+  description: API for sending and managing notifications (email, SMS, push)
+
+servers:
+  - url: https://api.notification-service.com/v1
+
+paths:
+  /notifications:
+    post:
+      summary: Send a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        '201':
+          description: Notification accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '400':
+          description: Invalid request
+
+    get:
+      summary: List sent notifications
+      parameters:
+        - name: type
+          in: query
+          description: Filter by notification type
+          required: false
+          schema:
+            type: string
+            enum: [email, sms, push]
+        - name: status
+          in: query
+          description: Filter by delivery status
+          required: false
+          schema:
+            type: string
+            enum: [pending, sent, failed]
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationResponse'
+
+  /notifications/{id}:
+    get:
+      summary: Get notification status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Notification ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '404':
+          description: Notification not found
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required:
+        - type
+        - recipient
+        - message
+      properties:
+        type:
+          type: string
+          enum: [email, sms, push]
+        recipient:
+          type: string
+          description: Email, phone number, or device token
+        subject:
+          type: string
+          description: Subject (for email/push)
+        message:
+          type: string
+          description: Notification message body
+        metadata:
+          type: object
+          description: Optional metadata for the notification
+
+    NotificationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        recipient:
+          type: string
+        status:
+          type: string
+          enum: [pending, sent, failed]
+        createdAt:
+          type: string
+          format: date-time
+        error:
+          type: string
+          nullable: true

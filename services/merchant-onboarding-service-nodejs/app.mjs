@@ -177,4 +177,30 @@ app.use("*", (_req, res) => {
   res.status(404).json({ error: "The requested resource does not exist on this server" });
 });
 
+const sample1 = `merch-${uuidv4()}`;
+merchants.set(sample1, {
+  merchantId: sample1,
+  name: "Sample Coffee Co.",
+  contactEmail: "contact@samplecoffee.com",
+  businessType: "Retail",
+  phone: "+94112233445",
+  website: "https://samplecoffee.com",
+  status: "approved",
+  createdAt: new Date().toISOString(),
+  kycStatus: "submitted"
+});
+
+const sample2 = `merch-${uuidv4()}`;
+merchants.set(sample2, {
+  merchantId: sample2,
+  name: "Demo Tech Ltd.",
+  contactEmail: "info@demotech.io",
+  businessType: "IT Services",
+  phone: "+94114455667",
+  website: "https://demotech.io",
+  status: "pending",
+  createdAt: new Date().toISOString(),
+  kycStatus: "pending"
+});
+
 export default app;
