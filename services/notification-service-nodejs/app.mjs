@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 
 const app = express();
 app.use(express.json());
+const sentNotifications = new Map();
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_SF9zrda1_QEniFgR3Mjp1ckJFBcMwrjkG");
 
@@ -327,7 +328,20 @@ app.post('/notifications', async (req, res) => {
         return res.status(500).json({ error: "Email sending failed", details: response.error });
       }
 
-      return res.status(200).json({
+      const notificationId = response.data.id;
+      const notification = {
+        id: notificationId,
+        type,
+        recipient: to,
+        status: "sent",
+        createdAt: new Date().toISOString(),
+        error: null
+      };
+
+      // Store in mock notification map
+      sentNotifications.set(notificationId, notification);
+
+      return res.status(201).json({
         message: "✅ Email sent successfully",
         id: response.data.id,
         promotionsMatched: filtered.length
@@ -341,6 +355,34 @@ app.post('/notifications', async (req, res) => {
     console.error("Error in /notifications:", error);
     res.status(500).json({ error: "Internal server error", details: error.message });
   }
+});
+
+// GET /notifications - list all sent mock notifications
+app.get('/notifications', (req, res) => {
+  const { type, status } = req.query;
+
+  let results = Array.from(sentNotifications.values());
+
+  if (type) {
+    results = results.filter((n) => n.type === type);
+  }
+
+  if (status) {
+    results = results.filter((n) => n.status === status);
+  }
+
+  return res.status(200).json(results);
+});
+
+// GET /notifications/:id - get a specific mock notification
+app.get('/notifications/:id', (req, res) => {
+  const { id } = req.params;
+
+  if (!sentNotifications.has(id)) {
+    return res.status(404).json({ error: "Notification not found" });
+  }
+
+  return res.status(200).json(sentNotifications.get(id));
 });
 
 // Health check
