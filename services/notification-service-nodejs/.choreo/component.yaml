@@ -15,15 +15,13 @@
 # under the License.
 
 # +required The configuration file schema version
-schemaVersion: 1.1
-
-# +optional Incoming connection details for the component
+schemaVersion: "1.2"
 endpoints:
   # +required Unique name for the endpoint.
   # This name will be used when generating the managed API
   - name: notification-rest-endpoint
     # +optional Display name for the endpoint.
-    displayName: Accounts REST Endpoint
+    displayName: Notification REST Endpoint
     # +required Service section has the user service endpoint details
     service:
       # +optional Base path of the API that gets exposed via the endpoint.

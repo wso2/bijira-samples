@@ -15,7 +15,7 @@
 # under the License.
 
 # +required The configuration file schema version
-schemaVersion: 1.1
+schemaVersion: 1.2
 
 # +optional Incoming connection details for the component
 endpoints:
@@ -23,7 +23,7 @@ endpoints:
   # This name will be used when generating the managed API
   - name: merchant-rest-endpoint
     # +optional Display name for the endpoint.
-    displayName: Accounts REST Endpoint
+    displayName: Merchant REST Endpoint
     # +required Service section has the user service endpoint details
     service:
       # +optional Base path of the API that gets exposed via the endpoint.
