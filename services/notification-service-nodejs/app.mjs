@@ -23,7 +23,7 @@ const promotions = [
     company_name: "FreshMart Supermarket",
     card_type: "Visa",
     description: "Get 15% cashback on grocery shopping every weekend.",
-    category: "Groceries",
+    category: "Supermarket",
     validity: { start_date: "2025-07-23", end_date: "2025-08-11" },
     promotion_details: "Get 15% cashback on grocery shopping every weekend. Valid at selected merchants only.",
     terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
@@ -32,7 +32,7 @@ const promotions = [
   {
     company_name: "Green Valley Grocers",
     card_type: "Visa",
-    category: "Groceries",
+    category: "Supermarket",
     promo_code: "SAVE10",
     description: "Get 10% off on groceries using Visa card",
     promotion_details: "Get 10% cashback on grocery shopping every weekend. Valid at selected merchants only.",
@@ -284,76 +284,101 @@ function buildEmailContent(filtered) {
 // POST /notifications - unified notification sender
 app.post('/notifications', async (req, res) => {
   try {
-    const { type, to, cardTypes = [], category, promoCode, subject, message } = req.body;
+    const {
+      type,
+      to,
+      subject,
+      cardTypes = [],
+      category,
+      promoCode,
+      startDate,
+      endDate,
+      message
+    } = req.body;
 
-    if (!type) {
-      return res.status(400).json({ error: "'type' field is required" });
+    if (!type || !to) {
+      return res.status(400).json({ error: "Missing 'type' or 'to' in request body" });
     }
 
-    if (type === "email") {
-      if (!to || typeof to !== "string" || !to.includes("@")) {
-        return res.status(400).json({ error: "Invalid or missing 'to' email address" });
-      }
-
-      // Filter promotions if no explicit message is provided
-      let filtered = [];
-      if (!message) {
-        filtered = promotions.filter((promo) => {
-          const matchCard = !cardTypes.length || cardTypes.some(
-              (ct) => promo.card_type?.toLowerCase() === ct.toLowerCase()
-          );
-          const matchCategory = !category || promo.category?.toLowerCase() === category.toLowerCase();
-          const matchCode = !promoCode || promo.promo_code?.toLowerCase() === promoCode.toLowerCase();
-          return matchCard && matchCategory && matchCode;
-        });
-      }
-
-      const { html, text } = message
-          ? { html: `<p>${message}</p>`, text: message }
-          : buildEmailContent(filtered);
-
-      const emailRequest = {
-        from: "Card Promotions <onboarding@resend.dev>",
-        to,
-        subject: subject || `Don't miss today's Promotions ${category ? ` in ${category}` : ''}`,
-        html,
-        text,
-        replyTo: "onboarding@resend.dev"
-      };
-
-      const response = await resend.emails.send(emailRequest);
-
-      if (response.error) {
-        console.error("Resend email error:", response.error);
-        return res.status(500).json({ error: "Email sending failed", details: response.error });
-      }
-
-      const notificationId = response.data.id;
-      const notification = {
-        id: notificationId,
-        type,
-        recipient: to,
-        status: "sent",
-        createdAt: new Date().toISOString(),
-        error: null
-      };
-
-      // Store in mock notification map
-      sentNotifications.set(notificationId, notification);
-
-      return res.status(201).json({
-        message: "✅ Email sent successfully",
-        id: response.data.id,
-        promotionsMatched: filtered.length
-      });
+    if (type !== "email") {
+      return res.status(400).json({ error: `Notification type '${type}' not supported` });
     }
 
-    // Other notification types can be handled here
-    return res.status(400).json({ error: `Notification type '${type}' not supported` });
+    const cleanCardTypes = Array.isArray(cardTypes)
+        ? cardTypes.filter(Boolean).map(ct => ct.trim().toLowerCase())
+        : [];
+
+    const cleanPromoCode = promoCode?.trim().toLowerCase() || '';
+    const cleanDate = startDate || endDate ? new Date(startDate || endDate) : null;
+
+    const cleanCategories = Array.isArray(category)
+        ? category.filter(Boolean).map(c => c.trim().toLowerCase())
+        : category ? [category.trim().toLowerCase()] : [];
+
+    const filtered = promotions.filter((promo) => {
+      const matchCard = !cleanCardTypes.length || cleanCardTypes.includes(promo.card_type?.toLowerCase());
+      const matchCategory = !cleanCategories.length || cleanCategories.includes(promo.category?.toLowerCase());
+      const matchCode = !cleanPromoCode || promo.promo_code?.toLowerCase() === cleanPromoCode;
+      const matchDate = !cleanDate || (
+          new Date(promo.validity.start_date) <= cleanDate &&
+          new Date(promo.validity.end_date) >= cleanDate
+      );
+      return matchCard && matchCategory && matchCode && matchDate;
+    });
+
+    if (filtered.length === 0) {
+      return res.status(200).json({ status: "no_matching_promotions", message: "No promotions matched the criteria." });
+    }
+
+    const userMessage = message || "You can find exclusive promotions given below.";
+
+    const { html: promosHtml, text: promosText } = buildEmailContent(filtered);
+
+    const fullHtml = `
+      <p>Dear Sir/Madam,</p>
+      <p>${userMessage}</p>
+      ${promosHtml}
+    `;
+
+    const fullText = `Dear Sir/Madam,\n\n${userMessage}\n\n${promosText}`;
+
+    const emailRequest = {
+      from: "Card Promotions <onboarding@resend.dev>",
+      to,
+      subject: subject || `Don't miss today's Promotions${cleanCategories.length ? ` in ${cleanCategories.join(', ')}` : ''}`,
+      html: fullHtml,
+      text: fullText,
+      replyTo: "onboarding@resend.dev"
+    };
+
+    const response = await resend.emails.send(emailRequest);
+
+    if (response.error) {
+      console.error("Resend email error:", response.error);
+      return res.status(500).json({ error: "Email sending failed", details: response.error });
+    }
+
+    const notificationId = response.data.id;
+    const notification = {
+      id: notificationId,
+      type,
+      recipient: to,
+      status: "sent",
+      createdAt: new Date().toISOString(),
+      error: null
+    };
+
+    sentNotifications.set(notificationId, notification);
+
+    return res.status(201).json({
+      message: "✅ Email sent successfully",
+      id: notificationId,
+      promotionsMatched: filtered.length
+    });
 
   } catch (error) {
     console.error("Error in /notifications:", error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    return res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
 

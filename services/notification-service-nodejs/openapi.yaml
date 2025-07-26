@@ -2,11 +2,6 @@ openapi: 3.0.0
 info:
   title: Notification API
   version: 1.0.0
-  description: API for sending and managing notifications (email, SMS, push)
-
-servers:
-  - url: https://api.notification-service.com/v1
-
 paths:
   /notifications:
     post:
@@ -16,98 +11,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NotificationRequest'
+              $ref: "#/components/schemas/NotificationRequest"
             example:
-              type: email
-              to: user@example.com
-              cardTypes: ["Visa", "Mastercard"]
-              category: Travel
-              promoCode: TRAVEL2025
-              subject: "Exclusive Travel Offer"
-              message: "Get 20% off on your next booking with TRAVEL2025."
-      responses:
-        '201':
-          description: Notification accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotificationResponse'
-              example:
-                id: "notif_12345"
-                type: email
-                recipient: user@example.com
-                status: pending
-                createdAt: "2025-07-25T06:42:00Z"
-                error: null
-        '400':
-          description: Invalid request
-
-    get:
-      summary: List sent notifications
-      parameters:
-        - name: type
-          in: query
-          description: Filter by notification type
-          required: false
-          schema:
-            type: string
-            enum: [email, sms, push]
-        - name: status
-          in: query
-          description: Filter by delivery status
-          required: false
-          schema:
-            type: string
-            enum: [pending, sent, failed]
+              type: "email"
+              to: "user@example.com"
+              subject: "Weekend Grocery Offers!"
+              message: "Check out these amazing grocery deals this weekend!"
+              cardTypes: ["Visa"]
+              category: ["Supermarket", "Dining"]
+              startDate: "2025-07-23"
+              endDate: "2025-08-01"
       responses:
         '200':
-          description: List of notifications
+          description: Notification sent successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/NotificationResponse'
-              example:
-                - id: "notif_12345"
-                  type: email
-                  recipient: user@example.com
-                  status: sent
-                  createdAt: "2025-07-24T11:00:00Z"
-                  error: null
-                - id: "notif_12346"
-                  type: sms
-                  recipient: "+1234567890"
-                  status: failed
-                  createdAt: "2025-07-24T11:01:00Z"
-                  error: "Invalid phone number"
-
-  /notifications/{id}:
-    get:
-      summary: Get notification status
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Notification ID
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Notification details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotificationResponse'
-              example:
-                id: "notif_12345"
-                type: email
-                recipient: user@example.com
-                status: sent
-                createdAt: "2025-07-24T11:00:00Z"
-                error: null
-        '404':
-          description: Notification not found
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
 
 components:
   schemas:
@@ -116,47 +40,104 @@ components:
       required:
         - type
         - to
-        - message
       properties:
         type:
           type: string
-          enum: [email, sms, push]
+          description: Notification type (e.g., email, sms)
+          example: email
         to:
           type: string
-          description: Email address, phone number, or device token
-        cardTypes:
-          type: array
-          items:
-            type: string
-          description: List of applicable card types
-        category:
-          type: string
-          description: Notification category
-        promoCode:
-          type: string
-          description: Promotional code
+          description: Recipient email address
+          example: user@example.com
         subject:
           type: string
-          description: Subject line (for email/push notifications)
+          description: Subject line of the notification
+          example: Weekend Grocery Offers!
         message:
           type: string
-          description: Main body of the notification
+          description: Content of the message
+          example: Check out these amazing grocery deals this weekend!
+        cardTypes:
+          type: array
+          description: Filter by card types
+          items:
+            type: string
+          example: ["Visa"]
+        category:
+          type: array
+          description: One or more promotion categories
+          items:
+            type: string
+            enum:
+              - Supermarket
+              - Dining
+              - Travel
+              - Electronics
+              - Fashion
+              - Health & Wellness
+              - Entertainment
+              - Education
+              - Other
+          example: ["Supermarket", "Dining"]
+        startDate:
+          type: string
+          format: date
+          description: Filter promotions starting from this date
+          example: "2025-07-23"
+        endDate:
+          type: string
+          format: date
+          description: Filter promotions ending before or on this date
+          example: "2025-08-01"
+        promotions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Promotion"
 
-    NotificationResponse:
+    Promotion:
       type: object
+      required:
+        - company_name
+        - card_type
+        - category
+        - description
+        - validity
+        - promotion_details
+        - terms_and_conditions
+        - promo_code
       properties:
-        id:
+        company_name:
           type: string
-        type:
+          example: FreshMart Supermarket
+        card_type:
           type: string
-        recipient:
+          example: Visa
+        category:
           type: string
-        status:
+          example: Supermarket
+        description:
           type: string
-          enum: [pending, sent, failed]
-        createdAt:
+          example: Get 15% cashback on grocery shopping every weekend.
+        validity:
+          type: object
+          required:
+            - start_date
+            - end_date
+          properties:
+            start_date:
+              type: string
+              format: date
+              example: "2025-07-23"
+            end_date:
+              type: string
+              format: date
+              example: "2025-08-11"
+        promotion_details:
           type: string
-          format: date-time
-        error:
+          example: Get 15% cashback on grocery shopping every weekend. Valid at selected merchants only.
+        terms_and_conditions:
           type: string
-          nullable: true
+          example: Terms apply. Offer valid only during the mentioned period. Subject to change without notice.
+        promo_code:
+          type: string
+          example: BOC-VISA-15GROC
