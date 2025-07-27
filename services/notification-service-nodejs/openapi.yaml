@@ -2,6 +2,8 @@ openapi: 3.0.0
 info:
   title: Notification API
   version: 1.0.0
+servers:
+  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-dev.e1-us-east-azure.bijiraapis.dev/grand-union-bank-unity/notification-api/v1.0
 paths:
   /notifications:
     post:
