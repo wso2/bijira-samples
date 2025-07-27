@@ -18,11 +18,17 @@ paths:
               type: "email"
               to: "user@example.com"
               subject: "Weekend Grocery Offers!"
-              message: "Check out these amazing grocery deals this weekend!"
-              cardTypes: ["Visa"]
-              category: ["Supermarket", "Dining"]
-              startDate: "2025-07-23"
-              endDate: "2025-08-01"
+              messageBody:
+                - company_name: "FreshMart Supermarket"
+                  card_type: "Visa"
+                  category: "Supermarket"
+                  description: "Get 15% cashback on grocery shopping every weekend."
+                  validity:
+                    start_date: "2025-07-23"
+                    end_date: "2025-08-11"
+                  promotion_details: "Get 15% cashback on grocery shopping every weekend. Valid at selected merchants only."
+                  terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice."
+                  promo_code: "BOC-VISA-15GROC"
       responses:
         '200':
           description: Notification sent successfully
@@ -42,6 +48,7 @@ components:
       required:
         - type
         - to
+        - messageBody
       properties:
         type:
           type: string
@@ -55,44 +62,9 @@ components:
           type: string
           description: Subject line of the notification
           example: Weekend Grocery Offers!
-        message:
-          type: string
-          description: Content of the message
-          example: Check out these amazing grocery deals this weekend!
-        cardTypes:
+        messageBody:
           type: array
-          description: Filter by card types
-          items:
-            type: string
-          example: ["Visa"]
-        category:
-          type: array
-          description: One or more promotion categories
-          items:
-            type: string
-            enum:
-              - Supermarket
-              - Dining
-              - Travel
-              - Electronics
-              - Fashion
-              - Health & Wellness
-              - Entertainment
-              - Education
-              - Other
-          example: ["Supermarket", "Dining"]
-        startDate:
-          type: string
-          format: date
-          description: Filter promotions starting from this date
-          example: "2025-07-23"
-        endDate:
-          type: string
-          format: date
-          description: Filter promotions ending before or on this date
-          example: "2025-08-01"
-        promotions:
-          type: array
+          description: List of promotions to include in the notification
           items:
             $ref: "#/components/schemas/Promotion"
 

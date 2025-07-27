@@ -7,181 +7,6 @@ const sentNotifications = new Map();
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_SF9zrda1_QEniFgR3Mjp1ckJFBcMwrjkG");
 
-// Sample promotions
-const promotions = [
-  {
-    company_name: "HNB Hotels & Resorts",
-    card_type: "Amex",
-    description: "Enjoy up to 25% off on hotel bookings with your card.",
-    category: "Travel & Hotels",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-12" },
-    promotion_details: "Enjoy up to 25% off on hotel bookings with your card. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "HNB-AMEX-25HOTEL"
-  },
-  {
-    company_name: "FreshMart Supermarket",
-    card_type: "Visa",
-    description: "Get 15% cashback on grocery shopping every weekend.",
-    category: "Supermarket",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-11" },
-    promotion_details: "Get 15% cashback on grocery shopping every weekend. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "BOC-VISA-15GROC"
-  },
-  {
-    company_name: "Green Valley Grocers",
-    card_type: "Visa",
-    category: "Supermarket",
-    promo_code: "SAVE10",
-    description: "Get 10% off on groceries using Visa card",
-    promotion_details: "Get 10% cashback on grocery shopping every weekend. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    validity: { start_date: "2025-07-01", end_date: "2025-07-31" }
-  },
-  {
-    company_name: "Gourmet Dining Co.",
-    card_type: "Visa",
-    description: "Buy 1 Get 1 Free on selected dining outlets.",
-    category: "Dining",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-22" },
-    promotion_details: "Buy 1 Get 1 Free on selected dining outlets. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "CBC-VISA-B1G1DIN"
-  },
-  {
-    company_name: "FashionHub",
-    card_type: "Visa",
-    description: "10% discount on all clothing items every Friday.",
-    category: "Fashion",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-05" },
-    promotion_details: "10% discount on all clothing items every Friday. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "NDB-VISA-10FRI"
-  },
-  {
-    company_name: "ElectroFest",
-    card_type: "Amex",
-    description: "Flat 20% off on electronics during the festive season.",
-    category: "Electronics",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-13" },
-    promotion_details: "Flat 20% off on electronics during the festive season. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "SAMP-AMEX-20ELEC"
-  },
-  {
-    company_name: "Mobile Zone",
-    card_type: "Visa",
-    description: "Special EMI options on mobile purchases.",
-    category: "Mobiles & Gadgets",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-11" },
-    promotion_details: "Special EMI options on mobile purchases. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "PB-VISA-EMIMOB"
-  },
-  {
-    company_name: "UtilityPay",
-    card_type: "Debit",
-    description: "Extra 5% discount on utility bill payments.",
-    category: "Utilities",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-13" },
-    promotion_details: "Extra 5% discount on utility bill payments. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "DFCC-DEBIT-5UTIL"
-  },
-  {
-    company_name: "Salon Luxe",
-    card_type: "Visa",
-    description: "Exclusive 30% off at selected salons.",
-    category: "Beauty & Wellness",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-06" },
-    promotion_details: "Exclusive 30% off at selected salons. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "AMA-VISA-30SALON"
-  },
-  {
-    company_name: "RewardsPlus",
-    card_type: "Amex",
-    description: "Double your reward points every Wednesday.",
-    category: "Rewards",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-15" },
-    promotion_details: "Double your reward points every Wednesday. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "UB-AMEX-2XWED"
-  },
-  {
-    company_name: "Sweet Treats Bakery",
-    card_type: "Visa",
-    description: "Complimentary dessert with any main course.",
-    category: "Dining",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-18" },
-    promotion_details: "Complimentary dessert with any main course. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "SEY-VISA-FREEDES"
-  },
-  {
-    company_name: "ShopEase",
-    card_type: "Debit",
-    description: "Free delivery on all online orders over Rs. 2000.",
-    category: "E-Commerce",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-20" },
-    promotion_details: "Free delivery on all online orders over Rs. 2000. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "SCB-DEBIT-FREEDEL"
-  },
-  {
-    company_name: "MovieMania",
-    card_type: "Amex",
-    description: "Win movie tickets when you spend over Rs. 5000.",
-    category: "Entertainment",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-20" },
-    promotion_details: "Win movie tickets when you spend over Rs. 5000. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "NTB-AMEX-MOVIE5000"
-  },
-  {
-    company_name: "LoanSmart Financial",
-    card_type: "Amex",
-    description: "Special rates on personal loans for cardholders.",
-    category: "Financial Services",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-21" },
-    promotion_details: "Special rates on personal loans for cardholders. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "PAB-AMEX-LOANSPL"
-  },
-  {
-    company_name: "FuelUp Gas Stations",
-    card_type: "Amex",
-    description: "Fuel up and save 5% every weekend.",
-    category: "Fuel",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-05" },
-    promotion_details: "Fuel up and save 5% every weekend. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "CB-AMEX-FUEL5WKND"
-  },
-  {
-    company_name: "CoffeeCorner Cafes",
-    card_type: "Visa",
-    description: "Free coffee every Monday at partner cafes.",
-    category: "Dining",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-09" },
-    promotion_details: "Free coffee every Monday at partner cafes. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "LBF-VISA-COFMON"
-  },
-  {
-    company_name: "AirFly Airlines",
-    card_type: "Visa",
-    description: "20% off on air tickets for international flights.",
-    category: "Travel & Hotels",
-    validity: { start_date: "2025-07-23", end_date: "2025-08-17" },
-    promotion_details: "20% off on air tickets for international flights. Valid at selected merchants only.",
-    terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice.",
-    promo_code: "MI-VISA-AIR20INT"
-  }
-];
-
-
 // Helper to build email HTML and text bodies from filtered promotions
 function buildEmailContent(filtered) {
   const promoItemsHtml = filtered.length
@@ -281,58 +106,29 @@ function buildEmailContent(filtered) {
   return { html: htmlTemplate, text };
 }
 
-// POST /notifications - unified notification sender
+
 app.post('/notifications', async (req, res) => {
   try {
     const {
       type,
       to,
       subject,
-      cardTypes = [],
-      category,
-      promoCode,
-      startDate,
-      endDate,
-      message
+      messageBody // <-- expected to be a list of promotion objects
     } = req.body;
 
-    if (!type || !to) {
-      return res.status(400).json({ error: "Missing 'type' or 'to' in request body" });
+    if (!type || !to || !Array.isArray(messageBody)) {
+      return res.status(400).json({
+        error: "Missing required fields. Ensure 'type', 'to', and 'messageBody' (as array) are present."
+      });
     }
 
     if (type !== "email") {
       return res.status(400).json({ error: `Notification type '${type}' not supported` });
     }
 
-    const cleanCardTypes = Array.isArray(cardTypes)
-        ? cardTypes.filter(Boolean).map(ct => ct.trim().toLowerCase())
-        : [];
+    const userMessage = "You can find exclusive promotions given below.";
 
-    const cleanPromoCode = promoCode?.trim().toLowerCase() || '';
-    const cleanDate = startDate || endDate ? new Date(startDate || endDate) : null;
-
-    const cleanCategories = Array.isArray(category)
-        ? category.filter(Boolean).map(c => c.trim().toLowerCase())
-        : category ? [category.trim().toLowerCase()] : [];
-
-    const filtered = promotions.filter((promo) => {
-      const matchCard = !cleanCardTypes.length || cleanCardTypes.includes(promo.card_type?.toLowerCase());
-      const matchCategory = !cleanCategories.length || cleanCategories.includes(promo.category?.toLowerCase());
-      const matchCode = !cleanPromoCode || promo.promo_code?.toLowerCase() === cleanPromoCode;
-      const matchDate = !cleanDate || (
-          new Date(promo.validity.start_date) <= cleanDate &&
-          new Date(promo.validity.end_date) >= cleanDate
-      );
-      return matchCard && matchCategory && matchCode && matchDate;
-    });
-
-    if (filtered.length === 0) {
-      return res.status(200).json({ status: "no_matching_promotions", message: "No promotions matched the criteria." });
-    }
-
-    const userMessage = message || "You can find exclusive promotions given below.";
-
-    const { html: promosHtml, text: promosText } = buildEmailContent(filtered);
+    const { html: promosHtml, text: promosText } = buildEmailContent(messageBody);
 
     const fullHtml = `
       <p>Dear Sir/Madam,</p>
@@ -345,7 +141,7 @@ app.post('/notifications', async (req, res) => {
     const emailRequest = {
       from: "Card Promotions <onboarding@resend.dev>",
       to,
-      subject: subject || `Don't miss today's Promotions${cleanCategories.length ? ` in ${cleanCategories.join(', ')}` : ''}`,
+      subject: subject || `Don't miss today's Promotions!`,
       html: fullHtml,
       text: fullText,
       replyTo: "onboarding@resend.dev"
@@ -373,7 +169,7 @@ app.post('/notifications', async (req, res) => {
     return res.status(201).json({
       message: "✅ Email sent successfully",
       id: notificationId,
-      promotionsMatched: filtered.length
+      promotionsIncluded: messageBody.length
     });
 
   } catch (error) {
