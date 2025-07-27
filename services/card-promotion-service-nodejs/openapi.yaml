@@ -4,6 +4,9 @@ info:
   version: 1.0.0
   description: API for retrieving and filtering credit/debit card promotional offers.
 
+servers:
+  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-dev.e1-us-east-azure.choreoapis.dev/grand-union-bank-unity/card-promotion-service-no/v1.0
+
 paths:
   /promotions:
     get:
