@@ -19,9 +19,9 @@ schemaVersion: "1.2"
 endpoints:
   # +required Unique name for the endpoint.
   # This name will be used when generating the managed API
-  - name: Card-Promotions-rest-endpoint
+  - name: card-promotions-rest-endpoint
     # +optional Display name for the endpoint.
-    displayName: Card-Promotions REST Endpoint
+    displayName: Card Promotions REST Endpoint
     # +required Service section has the user service endpoint details
     service:
       # +optional Base path of the API that gets exposed via the endpoint.
