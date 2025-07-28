@@ -11,7 +11,7 @@ paths:
   /promotions:
     get:
       summary: Get all card promotions
-      operationId: viewCardPromotions
+      operationId: view_card_promotions
       responses:
         '200':
           description: List of all promotions
@@ -25,7 +25,7 @@ paths:
   /promotions/filter:
     get:
       summary: Filter card promotions by parameters
-      operationId: filterCardPromotions
+      operationId: filter_card_promotions
       parameters:
         - in: query
           name: card_type
