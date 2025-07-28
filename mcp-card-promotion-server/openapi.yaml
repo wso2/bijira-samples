@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: MCP Card Promotions
+  version: 1.0.0
+
+paths:
+  /mcp:
+    post:
+      summary: Call MCP tools
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+
+      responses:
+        '200':
+          description: Successful too call
+          content:
+            application/json:
+              schema:
+                type: object

@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: Notification API
+  version: 1.0.0
+servers:
+  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-prod.e1-us-east-azure.choreoapis.dev/grand-union-bank-unity/notification-service-node/v1.0
+paths:
+  /notifications:
+    post:
+      summary: Send a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationRequest"
+            example:
+              type: "email"
+              to: "user@example.com"
+              subject: "Weekend Grocery Offers!"
+              messageBody:
+                - company_name: "FreshMart Supermarket"
+                  card_type: "Visa"
+                  category: "Supermarket"
+                  description: "Get 15% cashback on grocery shopping every weekend."
+                  validity:
+                    start_date: "2025-07-23"
+                    end_date: "2025-08-11"
+                  promotion_details: "Get 15% cashback on grocery shopping every weekend. Valid at selected merchants only."
+                  terms_and_conditions: "Terms apply. Offer valid only during the mentioned period. Subject to change without notice."
+                  promo_code: "BOC-VISA-15GROC"
+      responses:
+        '200':
+          description: Notification sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required:
+        - type
+        - to
+        - messageBody
+      properties:
+        type:
+          type: string
+          description: Notification type (e.g., email, sms)
+          example: email
+        to:
+          type: string
+          description: Recipient email address
+          example: user@example.com
+        subject:
+          type: string
+          description: Subject line of the notification
+          example: Weekend Grocery Offers!
+        messageBody:
+          type: array
+          description: List of promotions to include in the notification
+          items:
+            $ref: "#/components/schemas/Promotion"
+
+    Promotion:
+      type: object
+      required:
+        - company_name
+        - card_type
+        - category
+        - description
+        - validity
+        - promotion_details
+        - terms_and_conditions
+        - promo_code
+      properties:
+        company_name:
+          type: string
+          example: FreshMart Supermarket
+        card_type:
+          type: string
+          example: Visa
+        category:
+          type: string
+          example: Supermarket
+        description:
+          type: string
+          example: Get 15% cashback on grocery shopping every weekend.
+        validity:
+          type: object
+          required:
+            - start_date
+            - end_date
+          properties:
+            start_date:
+              type: string
+              format: date
+              example: "2025-07-23"
+            end_date:
+              type: string
+              format: date
+              example: "2025-08-11"
+        promotion_details:
+          type: string
+          example: Get 15% cashback on grocery shopping every weekend. Valid at selected merchants only.
+        terms_and_conditions:
+          type: string
+          example: Terms apply. Offer valid only during the mentioned period. Subject to change without notice.
+        promo_code:
+          type: string
+          example: BOC-VISA-15GROC

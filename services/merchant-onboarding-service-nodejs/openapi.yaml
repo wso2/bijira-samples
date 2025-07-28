@@ -1,0 +1,373 @@
+openapi: 3.0.3
+info:
+  title: Merchant Onboarding API
+  version: 1.2.0
+  description: API for fintechs or marketplaces to register as merchants for card payments. Supports KYC, account linking, approval workflows, and CRUD operations.
+
+servers:
+  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-prod.e1-us-east-azure.choreoapis.dev/grand-union-bank-unity/merchant-onboarding-servi/v1.0
+
+paths:
+
+  /merchants:
+    get:
+      summary: Retrieve all merchants
+      description: Returns a list of all registered merchants.
+      responses:
+        '200':
+          description: A list of merchants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  merchants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Merchant'
+    post:
+      summary: Register a new merchant
+      description: Register a fintech or marketplace as a merchant for accepting card payments.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchantRegistrationRequest'
+      responses:
+        '201':
+          description: Merchant registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantRegistrationResponse'
+        '400':
+          description: Invalid input data
+
+  /merchants/{merchantId}:
+    get:
+      summary: Get merchant by ID
+      description: Retrieve a specific merchant by their unique merchant ID.
+      parameters:
+        - name: merchantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Merchant details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Merchant'
+        '404':
+          description: Merchant not found
+
+    patch:
+      summary: Update merchant information
+      description: Update details of a registered merchant.
+      parameters:
+        - name: merchantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchantUpdateRequest'
+      responses:
+        '200':
+          description: Merchant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  merchantId:
+                    type: string
+                    example: merch-10001
+                  message:
+                    type: string
+                    example: Merchant updated successfully.
+        '404':
+          description: Merchant not found
+
+    delete:
+      summary: Delete a merchant
+      description: Delete a merchant registration.
+      parameters:
+        - name: merchantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Merchant deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  merchantId:
+                    type: string
+                    example: merch-10001
+                  message:
+                    type: string
+                    example: Merchant deleted successfully.
+        '404':
+          description: Merchant not found
+
+  /merchants/{merchantId}/kyc:
+    post:
+      summary: Submit KYC documents
+      description: Upload KYC information and documents for merchant verification.
+      parameters:
+        - name: merchantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KYCSubmissionRequest'
+      responses:
+        '200':
+          description: KYC submission received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KYCSubmissionResponse'
+        '404':
+          description: Merchant not found
+
+  /merchants/{merchantId}/account-link:
+    post:
+      summary: Link payout bank account
+      description: Link a bank account to the merchant profile for payouts.
+      parameters:
+        - name: merchantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountLinkRequest'
+      responses:
+        '200':
+          description: Account linked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLinkResponse'
+        '404':
+          description: Merchant not found
+
+  /merchants/{merchantId}/approval-status:
+    get:
+      summary: Check merchant approval status
+      description: Retrieve current approval status of a merchant.
+      parameters:
+        - name: merchantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approval status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalStatusResponse'
+        '404':
+          description: Merchant not found
+
+components:
+  schemas:
+
+    Merchant:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          example: merch-10001
+        name:
+          type: string
+          example: Test Merchant
+        contactEmail:
+          type: string
+          format: email
+          example: merchant@test.com
+        businessType:
+          type: string
+          example: marketplace
+        phone:
+          type: string
+          example: "+1-555-000-1111"
+        website:
+          type: string
+          format: uri
+          example: https://merchant.test
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          example: pending
+        createdAt:
+          type: string
+          format: date-time
+          example: 2025-07-22T14:00:00.000Z
+
+    MerchantRegistrationRequest:
+      type: object
+      required:
+        - name
+        - contactEmail
+        - businessType
+      properties:
+        name:
+          type: string
+          example: "FinTech Marketplace Ltd."
+        contactEmail:
+          type: string
+          format: email
+          example: "contact@fintechmarket.com"
+        businessType:
+          type: string
+          example: "marketplace"
+        phone:
+          type: string
+          example: "+1-555-123-4567"
+        website:
+          type: string
+          format: uri
+          example: "https://fintechmarket.com"
+
+    MerchantRegistrationResponse:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          example: "merch-10001"
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          example: "pending"
+        message:
+          type: string
+          example: "Merchant registration submitted successfully."
+
+    MerchantUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Updated Merchant Name"
+        contactEmail:
+          type: string
+          format: email
+          example: "updated-email@example.com"
+        businessType:
+          type: string
+          example: "marketplace"
+        phone:
+          type: string
+          example: "+1-555-987-6543"
+        website:
+          type: string
+          format: uri
+          example: "https://updatedwebsite.com"
+
+    KYCSubmissionRequest:
+      type: object
+      required:
+        - documents
+      properties:
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              documentType:
+                type: string
+                example: "business_license"
+              documentUrl:
+                type: string
+                format: uri
+                example: "https://storage.example.com/docs/license.pdf"
+
+    KYCSubmissionResponse:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          example: "merch-10001"
+        kycStatus:
+          type: string
+          enum: [submitted, verified, rejected]
+          example: "submitted"
+        message:
+          type: string
+          example: "KYC documents received and under review."
+
+    AccountLinkRequest:
+      type: object
+      required:
+        - bankAccountNumber
+        - bankRoutingNumber
+        - accountHolderName
+      properties:
+        bankAccountNumber:
+          type: string
+          example: "1234567890"
+        bankRoutingNumber:
+          type: string
+          example: "111000025"
+        accountHolderName:
+          type: string
+          example: "FinTech Marketplace Ltd."
+
+    AccountLinkResponse:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          example: "merch-10001"
+        linkedAccountId:
+          type: string
+          example: "acct-7890"
+        message:
+          type: string
+          example: "Bank account linked successfully."
+
+    ApprovalStatusResponse:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          example: "merch-10001"
+        approvalStatus:
+          type: string
+          enum: [pending, approved, rejected]
+          example: "approved"
+        reviewedBy:
+          type: string
+          example: "admin-user-01"
+        reviewedAt:
+          type: string
+          format: date-time
+          example: "2025-07-21T14:25:00Z"
+        remarks:
+          type: string
+          example: "All documents verified successfully."

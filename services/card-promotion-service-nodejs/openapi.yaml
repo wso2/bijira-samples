@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: Card Promotions API
+  version: 1.0.0
+  description: API for retrieving and filtering credit/debit card promotional offers.
+
+servers:
+  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-prod.e1-us-east-azure.choreoapis.dev/grand-union-bank-unity/card-promotion-service-no/v1.0
+
+paths:
+  /promotions:
+    get:
+      summary: Get all card promotions
+      operationId: view_card_promotions
+      responses:
+        '200':
+          description: List of all promotions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+
+  /promotions/filter:
+    get:
+      summary: Filter card promotions by parameters
+      operationId: filter_card_promotions
+      parameters:
+        - in: query
+          name: card_type
+          schema:
+            type: string
+            enum: [Visa, Amex, Debit]
+          description: Filter by card type
+        - in: query
+          name: category
+          schema:
+            type: string
+          description: Filter by promotion category
+        - in: query
+          name: company_name
+          schema:
+            type: string
+          description: Filter by company name
+        - in: query
+          name: active_on
+          schema:
+            type: string
+            format: date
+          description: Filter promotions active on a specific date (yyyy-mm-dd)
+      responses:
+        '200':
+          description: Filtered list of promotions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Promotion'
+
+components:
+  schemas:
+    Promotion:
+      type: object
+      properties:
+        company_name:
+          type: string
+        card_type:
+          type: string
+          enum: [Visa, Amex, Debit]
+        description:
+          type: string
+        category:
+          type: string
+        validity:
+          type: object
+          properties:
+            start_date:
+              type: string
+              format: date
+            end_date:
+              type: string
+              format: date
+        promotion_details:
+          type: string
+        terms_and_conditions:
+          type: string
+        promo_code:
+          type: string
