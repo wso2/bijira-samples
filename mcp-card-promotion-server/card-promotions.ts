@@ -37,8 +37,8 @@ export const SendPromotionsEmailSchema = z.object({
 });
 
 enum ToolName {
-  VIEW_PROMOTIONS_MENU = "viewCardPromotions",
-  FILTER_PROMOTIONS = "filterCardPromotions",
+  VIEW_PROMOTIONS_MENU = "view_card_promotions",
+  FILTER_PROMOTIONS = "filter_card_promotions",
 }
 
 enum PromptName {
