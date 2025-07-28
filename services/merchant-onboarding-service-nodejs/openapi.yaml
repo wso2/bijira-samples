@@ -5,7 +5,7 @@ info:
   description: API for fintechs or marketplaces to register as merchants for card payments. Supports KYC, account linking, approval workflows, and CRUD operations.
 
 servers:
-  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-dev.e1-us-east-azure.choreoapis.dev/grand-union-bank-unity/accounts-service-nodejs/v1.0
+  - url: https://ecad9e6b-e034-43ac-a3a0-46553e637d00-prod.e1-us-east-azure.choreoapis.dev/grand-union-bank-unity/merchant-onboarding-servi/v1.0
 
 paths:
 
