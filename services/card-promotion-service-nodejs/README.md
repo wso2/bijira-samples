@@ -1,4 +1,4 @@
-# Choreo Sample Node.js REST API - Card promotion API
+# Choreo Sample Node.js REST API - Card Promotion API
 
 ## Repository File Structure
 
