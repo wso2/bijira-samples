@@ -1,4 +1,4 @@
-# Choreo Sample Node.js REST API - Reading List
+# Choreo Sample Node.js REST API - Merchant On Boarding API
 
 ## Repository File Structure
 
@@ -26,14 +26,14 @@ You can select either Docker or Go as buildpacks. Fill as follow according to se
 
     | **Field**             | **Description**                               |
     |-----------------------|-----------------------------------------------|
-    |Name           | Reading books list service              |
-    |Description    | reading books list service        |
+    |Name           | Merchant onboarding service              |
+    |Description    | merchant onboarding service        |
     | **GitHub Account**    | Your account                                  |
     | **GitHub Repository** | choreo-samples |
     | **Branch**            | **`main`**                               |
     | **Buildpack**      | `NodeJs` |
-    | **Select Go Project Directory**       | reading-books-list-service-nodejs|
-    | **Select Language Version**              | 18.x.x |
+    | **Select Go Project Directory**       | merchant-onboarding-service-nodejs|
+    | **Select Language Version**              | 20.x.x |
 
 3. Click Create. Once the component creation is complete, you will see the component overview page.
 4. Deploy the created component
@@ -44,7 +44,7 @@ You can select either Docker or Go as buildpacks. Fill as follow according to se
 Navigate to the Node.js application directory
 
 ```bash
-cd reading-books-list-service-nodejs
+cd merchant-onboarding-service-nodejs
 ```
 
 Run the service
