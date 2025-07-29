@@ -1,4 +1,4 @@
-# Choreo Sample Node.js REST API - Reading List
+# Choreo Sample Node.js REST API - AccountInfo API
 
 ## Repository File Structure
 
@@ -26,8 +26,8 @@ You can select either Docker or Go as buildpacks. Fill as follow according to se
 
     | **Field**             | **Description**                               |
     |-----------------------|-----------------------------------------------|
-    |Name           | Reading books list service              |
-    |Description    | reading books list service        |
+    |Name           | AccountInfo service              |
+    |Description    | account info service        |
     | **GitHub Account**    | Your account                                  |
     | **GitHub Repository** | choreo-samples |
     | **Branch**            | **`main`**                               |
@@ -44,7 +44,7 @@ You can select either Docker or Go as buildpacks. Fill as follow according to se
 Navigate to the Node.js application directory
 
 ```bash
-cd reading-books-list-service-nodejs
+cd accounts-service-nodejs
 ```
 
 Run the service
