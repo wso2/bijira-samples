@@ -1,0 +1,26 @@
+asyncapi: '2.0.0'
+info:
+  title: 'Chat API'
+  version: 1.0.0
+  description: 'Chat API for real-time chat between multipleusers'
+servers:
+  localhost:
+    url: wss://apis.bijira.dev/samples/chat-service-nodejs/v1.0
+    protocol: wss
+channels:
+  /:
+   publish:
+     operationId: ReceiveMessage
+     message:
+       $ref: '#/components/messages/message'
+   subscribe:
+     operationId: SendMessage
+     message:
+       $ref: '#/components/messages/message'
+components:
+  messages:
+    message:
+      name: message
+      title: message
+      payload:
+        type: object
