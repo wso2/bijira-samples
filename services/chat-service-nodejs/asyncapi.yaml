@@ -5,7 +5,7 @@ info:
   description: 'Chat API for real-time chat between multipleusers'
 servers:
   localhost:
-    url: wss://apis.bijira.dev/samples/chat-service-nodejs/v1.0
+    url: wss://7ad02c14-c82c-4e31-9e1c-67ecfdab8c27-prod.e1-us-east-azure.preview-dv.choreoapis.dev/default/chat-service-nodejs/v1.0
     protocol: wss
 channels:
   /:
