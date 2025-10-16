@@ -22,5 +22,15 @@ components:
     message:
       name: message
       title: message
+      summary: "Message received from the client"
       payload:
         type: object
+        properties:
+          type:
+            type: string
+            description: "Type of the message"
+            example: "connect"
+          message:
+            type: string
+            description: "Message content"
+            example: "Hello from user1"
