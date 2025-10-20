@@ -1,0 +1,26 @@
+asyncapi: '2.0.0'
+info:
+  title: 'Chat API'
+  version: 1.0.0
+  description: 'Chat API for real-time chat between multipleusers'
+servers:
+  localhost:
+    url: wss://7ad02c14-c82c-4e31-9e1c-67ecfdab8c27-prod.e1-us-east-azure.preview-dv.choreoapis.dev/default/chat-service-nodejs/v1.0
+    protocol: wss
+channels:
+  /:
+   publish:
+     operationId: ReceiveMessage
+     message:
+       $ref: '#/components/messages/message'
+   subscribe:
+     operationId: SendMessage
+     message:
+       $ref: '#/components/messages/message'
+components:
+  messages:
+    message:
+      name: message
+      title: message
+      payload:
+        type: object
