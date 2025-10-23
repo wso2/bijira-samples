@@ -17,6 +17,21 @@
       ]
     },
     {
+      "name": "Chat Service API",
+      "displayName": "Chat Service API",
+      "description": "A Sample API proxy that provides endpoints to manage a real-time chat between multiple users",
+      "componentType": "API-proxy",
+      "repositoryUrl": "https://github.com/wso2/bijira-samples/",
+      "componentPath": "/chat-service-api",
+      "thumbnailPath": "https://raw.githubusercontent.com/wso2/bijira-samples/refs/heads/main/.samples/icons/chat-service.svg",
+      "documentationPath": "/chat-service-api/readme.md",
+      "buildPack": "none",
+      "tags": [
+        "HTTP",
+        "WebSocket"
+      ]
+    },
+    {
       "name": "OpenAI Sample API",
       "displayName": "OpenAI Sample API",
       "description": "A sample API proxy that interacts with OpenAI API.",
