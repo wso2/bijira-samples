@@ -27,7 +27,7 @@
       "documentationPath": "/chat-service-api/readme.md",
       "buildPack": "none",
       "tags": [
-        "HTTP",
+        "API Proxy",
         "WebSocket"
       ]
     },
