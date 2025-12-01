@@ -1,0 +1,91 @@
+# Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com/) All Rights Reserved.
+
+# WSO2 LLC. licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License.
+# You may obtain a copy of the License at
+
+# http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+asyncapi: 2.0.0
+info:
+  title: Git Issues WebSub Subscriber API
+  version: '1.0.0'
+  description: |
+    API definition for a service that acts as a WebSub subscriber for Git issue events (e.g., from GitHub).
+    It expects to receive notifications from a WebSub Hub.
+servers:
+  production:
+    url: https://api.example.com/websub
+    protocol: http
+    description: The endpoint where the subscriber listens for incoming WebSub notifications.
+channels:
+  /issues:
+    description: The channel/topic for receiving updates related to Git issues.
+    subscribe:
+      operationId: receiveGitIssueEvent
+      summary: Receive a Git issue event via WebSub notification.
+      bindings:
+        http:
+          type: request
+          method: POST
+      message:
+        $ref: '#/components/messages/GitIssueEvent'
+
+components:
+  messages:
+    GitIssueEvent:
+      name: gitIssueEvent
+      title: Git Issue Event
+      summary: Details of a created, updated, or deleted Git issue.
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: The action performed on the issue (e.g., 'created', 'opened', 'edited', 'deleted', 'closed', 'reopened').
+            enum: ['created', 'opened', 'edited', 'deleted', 'closed', 'reopened']
+          issue:
+            type: object
+            description: The issue object as defined by the Git provider's API.
+            properties:
+              id:
+                type: integer
+                description: Unique identifier for the issue.
+              title:
+                type: string
+                description: Title of the issue.
+              body:
+                type: string
+                description: Description of the issue.
+              state:
+                type: string
+                enum: ['open', 'closed']
+                description: Current state of the issue.
+              html_url:
+                type: string
+                format: uri
+                description: URL to view the issue in a browser.
+              # Add other relevant issue properties
+          repository:
+            type: object
+            description: The repository the issue belongs to.
+            properties:
+              name:
+                type: string
+              html_url:
+                type: string
+                format: uri
+            # Add other relevant repository properties
+        required:
+          - action
+          - issue
+          - repository
