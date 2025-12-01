@@ -1,0 +1,89 @@
+asyncapi: 2.0.0
+info:
+  title: Git Issues WebSub Subscriber API
+  version: '1.0.0'
+  description: |
+    API definition for a service that acts as a WebSub subscriber for Git issue events (e.g., from GitHub).
+    It expects to receive notifications from a WebSub Hub.
+servers:
+  production:
+    url: https://api.example.com/websub
+    protocol: http
+    description: The endpoint where the subscriber listens for incoming WebSub notifications.
+channels:
+  /issues:
+    description: The channel/topic for receiving updates related to Git issues.
+    subscribe:
+      operationId: receiveGitIssueEvent
+      summary: Receive a Git issue event via WebSub notification.
+      bindings:
+        http:
+          type: request
+          method: POST
+      message:
+        $ref: '#/components/messages/GitIssueEvent'
+
+components:
+  messages:
+    GitIssueEvent:
+      name: gitIssueEvent
+      title: Git Issue Event
+      summary: Details of a created, updated, or deleted Git issue.
+      contentType: application/json
+      payload:
+        type: object
+        properties:
+          action:
+            type: string
+            description: The action performed on the issue (e.g., 'created', 'opened', 'edited', 'deleted', 'closed', 'reopened').
+            enum: ['created', 'opened', 'edited', 'deleted', 'closed', 'reopened']
+          issue:
+            type: object
+            description: The issue object as defined by the Git provider's API.
+            properties:
+              id:
+                type: integer
+                description: Unique identifier for the issue.
+              title:
+                type: string
+                description: Title of the issue.
+              body:
+                type: string
+                description: Description of the issue.
+              state:
+                type: string
+                enum: ['open', 'closed']
+                description: Current state of the issue.
+              html_url:
+                type: string
+                format: uri
+                description: URL to view the issue in a browser.
+              # Add other relevant issue properties
+          repository:
+            type: object
+            description: The repository the issue belongs to.
+            properties:
+              name:
+                type: string
+              html_url:
+                type: string
+                format: uri
+            # Add other relevant repository properties
+        required:
+          - action
+          - issue
+          - repository
+      # bindings:
+      #   http:
+      #     headers:
+      #       type: object
+      #       properties:
+      #         'Content-Type':
+      #           type: string
+      #           enum: [application/json]
+      #         'X-Hub-Signature-256':
+      #           type: string
+      #           description: HMAC-SHA256 signature of the request body, using the subscriber's secret.
+      #       required:
+      #         - 'Content-Type'
+      #         - 'X-Hub-Signature-256'
