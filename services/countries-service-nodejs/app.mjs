@@ -224,36 +224,144 @@ app.use(express.json({ limit: "1mb" }));
 
 app.get("/healthz", (_req, res) => res.sendStatus(200));
 
-// Minimal GraphQL over HTTP (POST only).
-app.post("/graphql", async (req, res) => {
-  const { query, variables, operationName } = req.body || {};
-
-  if (!query || typeof query !== "string") {
-    return res.status(400).json({ errors: [{ message: "Request body must include a string 'query' field." }] });
+app.get("/schema.graphql", (_req, res) => {
+  try {
+    const schemaContent = fs.readFileSync(path.resolve(__dirname, "schema.graphql"), "utf8");
+    res.type("text/plain; charset=utf-8").send(schemaContent);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read schema file" });
   }
+});
 
-  const result = await graphql({
+async function executeGraphQL({ query, variables, operationName }) {
+  return graphql({
     schema,
     source: query,
     rootValue,
     variableValues: variables ?? undefined,
     operationName: operationName ?? undefined
   });
+}
 
+const introspectionQueryDefault = `
+  query IntrospectionQuery {
+    __schema {
+      queryType { name }
+      mutationType { name }
+      subscriptionType { name }
+      types { ...FullType }
+      directives {
+        name
+        description
+        locations
+        args { ...InputValue }
+      }
+    }
+  }
+  fragment FullType on __Type {
+    kind
+    name
+    description
+    fields(includeDeprecated: true) {
+      name
+      description
+      args { ...InputValue }
+      type { ...TypeRef }
+      isDeprecated
+      deprecationReason
+    }
+    inputFields { ...InputValue }
+    interfaces { ...TypeRef }
+    enumValues(includeDeprecated: true) {
+      name
+      description
+      isDeprecated
+      deprecationReason
+    }
+    possibleTypes { ...TypeRef }
+  }
+  fragment InputValue on __InputValue {
+    name
+    description
+    type { ...TypeRef }
+    defaultValue
+  }
+  fragment TypeRef on __Type {
+    kind
+    name
+    ofType {
+      kind
+      name
+      ofType {
+        kind
+        name
+        ofType {
+          kind
+          name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+                ofType {
+                  kind
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+async function handleGraphQLGet(req, res) {
+  const query = typeof req.query.query === "string" ? req.query.query : null;
+  const result = await executeGraphQL({ query: query ?? introspectionQueryDefault });
   const status = result.errors?.length ? 400 : 200;
   return res.status(status).json(result);
+}
+
+async function handleGraphQLPost(req, res) {
+  const { query, variables, operationName } = req.body || {};
+  if (!query || typeof query !== "string") {
+    return res.status(400).json({ errors: [{ message: "Request body must include a string 'query' field." }] });
+  }
+  const result = await executeGraphQL({ query, variables, operationName });
+  const status = result.errors?.length ? 400 : 200;
+  return res.status(status).json(result);
+}
+
+app.get("/graphql", async (req, res) => {
+  return handleGraphQLGet(req, res);
 });
 
-app.get("/", (_req, res) => {
-  res.type("text/plain").send(
+// Minimal GraphQL over HTTP (POST).
+app.post("/graphql", async (req, res) => {
+  return handleGraphQLPost(req, res);
+});
+
+// Also accept GraphQL on "/" (some gateways/managed endpoints call the base path directly)
+app.get("/", async (req, res) => {
+  if (typeof req.query.query === "string") return handleGraphQLGet(req, res);
+  return res.type("text/plain").send(
     [
       "Countries GraphQL Service",
       "",
-      "POST /graphql with JSON body: { \"query\": \"{ countries { code name } }\" }",
-      "GET  /healthz"
+      "GET  /graphql (or /?query=...) - Schema introspection / schema fetching",
+      "POST /graphql - Execute GraphQL queries with JSON body: { \"query\": \"{ countries { code name } }\" }",
+      "GET  /schema.graphql - Raw schema",
+      "GET  /healthz - Health check"
     ].join("\n")
   );
 });
+
+app.post("/", async (req, res) => handleGraphQLPost(req, res));
 
 // 404 handler
 app.use("*", (_req, res) => {
