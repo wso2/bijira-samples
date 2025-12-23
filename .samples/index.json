@@ -1,5 +1,5 @@
 {
-  "count": 3,
+  "count": 5,
   "samples": [
     {
       "name": "Reading List API",
@@ -62,6 +62,21 @@
         "API Proxy",
         "HTTP",
         "Egress"
+      ]
+    },
+    {
+      "name": "Countries API",
+      "displayName": "Countries API",
+      "description": "A sample GraphQL API proxy that provides GraphQL operations to manage country data.",
+      "componentType": "API-proxy",
+      "repositoryUrl": "https://github.com/wso2/bijira-samples/",
+      "componentPath": "/countries-api",
+      "thumbnailPath": "https://raw.githubusercontent.com/wso2/bijira-samples/refs/heads/main/.samples/icons/countries.svg",
+      "documentationPath": "/countries-api/readme.md",
+      "buildPack": "none",
+      "tags": [
+        "API Proxy",
+        "GraphQL"
       ]
     }
   ]
