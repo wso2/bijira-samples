@@ -67,7 +67,7 @@
     {
       "name": "Countries API",
       "displayName": "Countries API",
-      "description": "A sample GraphQL API proxy that provides GraphQL operations to manage country data.",
+      "description": "A sample GraphQL API proxy that provides operations to manage data related to countries.",
       "componentType": "API-proxy",
       "repositoryUrl": "https://github.com/wso2/bijira-samples/",
       "componentPath": "/countries-api",
